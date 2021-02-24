@@ -548,9 +548,11 @@ export async function runBuiltInOptimize(config: SnowpackConfig) {
   }
 
   // * PRELOAD: TRUE - Add preload link elements for each HTML entrypoint, to flatten
-  // and optimize any deep import waterfalls.
   if (options.preload) {
-    if (options.bundle) {
+    // in order to enable code-splitting, you need to also enable bundling,
+    // but we only want to allow preloading if you're also splitting since it's
+    // not needed for bundling-only
+    if (options.bundle && !options.splitting) {
       throw new Error('preload is not needed when bundle=true, and cannot be used in combination.');
     }
     if (!htmlEntrypoints || htmlEntrypoints.length === 0) {
